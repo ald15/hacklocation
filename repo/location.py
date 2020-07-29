@@ -9,7 +9,7 @@ password=input(b'\xd0\x92\xd0\xb2\xd0\xb5\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5 \xd0\x
 def get_location():
  while True:
   bssid=input('\n' + b'\xd0\x92\xd0\xb2\xd0\xb5\xd0\xb4\xd0\xb8\xd1\x82\xd0\xb5 BSSID: '.decode(enc)).strip().replace(' ','').replace(':','').upper()
-  if bssid=='0' or bssid=='exit' or bssid=='e' or bssid=='s' or bssid=='q':
+  if bssid=='0' or bssid=='exit'.upper() or bssid=='e'.upper() or bssid=='s'.upper() or bssid=='q'.upper():
    break
   response=req.get("https://mobile.maps.yandex.net/cellid_location/?wifinetworks="+bssid+":-65&app=ymetro")
   soup=BeautifulSoup(response.text,'lxml')
@@ -29,7 +29,11 @@ def get_location():
    mapLink="https://yandex.ru/maps/?mode=search&text="+location[0]+"%2C"+location[1]+"&z=16"
    response=req.get(mapLink)
    soup=BeautifulSoup(response.text,'lxml')
-   adress=str(soup.find("div","toponym-card-title-view__description").text)
+   adress=soup.find("div","toponym-card-title-view__description")
+   if adress:
+    adress=str(adress.text)
+   else:
+    adress='NONE'
    description=soup.find("div","card-encyclopedia-view__description _collapsed")
    if description:
     description=str(description.text)
